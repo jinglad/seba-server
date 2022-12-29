@@ -36,7 +36,7 @@ const DoctorAppointmentSchema = new mongoose.Schema({
   },
   report: {
     type: String,
-    required: [true, "Report is required"],
+    // required: [true, "Report is required"],
   },
 });
 
