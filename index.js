@@ -4,13 +4,15 @@ const fileUpload = require("express-fileupload");
 require("dotenv").config();
 const userRoute = require("./routers/user.routes");
 const connectDB = require("./db/connect");
+const doctorAppointmentRoute = require("./routers/doctorAppointment.route");
+const paymentRoute = require("./routers/payment.router");
 
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(fileUpload());
-
 
 const port = process.env.PORT || 5000;
 
@@ -18,11 +20,10 @@ app.get("/", (req, res) => {
   res.send("Seba Server");
 });
 
-
-
-
 // api routes
 app.use("/", userRoute);
+app.use("/api/doctor-appointment", doctorAppointmentRoute);
+app.use("/api/payment", paymentRoute);
 
 // db connection
 const start = async () => {

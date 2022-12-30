@@ -22,9 +22,9 @@ const DoctorAppointmentSchema = new mongoose.Schema({
     type: String,
     required: [true, "Gender is required"],
   },
-  dateOfBirth: {
+  age: {
     type: String,
-    required: [true, "Date of birth is required"],
+    required: [true, "Age is required"],
   },
   date: {
     type: Date,
@@ -37,6 +37,10 @@ const DoctorAppointmentSchema = new mongoose.Schema({
   report: {
     type: String,
     // required: [true, "Report is required"],
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
 });
 
