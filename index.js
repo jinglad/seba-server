@@ -1,3 +1,4 @@
+require("express-async-errors");
 const express = require("express");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
@@ -24,6 +25,10 @@ app.get("/", (req, res) => {
 app.use("/", userRoute);
 app.use("/api/doctor-appointment", doctorAppointmentRoute);
 app.use("/api/payment", paymentRoute);
+
+app.use((err, req, res, next) => {
+  return res.status(500).send({ msg: err.message });
+});
 
 // db connection
 const start = async () => {

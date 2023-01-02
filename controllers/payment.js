@@ -1,14 +1,13 @@
 const SSLCommerz = require("ssl-commerz-node");
 const PaymentSession = SSLCommerz.PaymentSession;
 const User = require("../models/user.model");
+const DoctorAppointment = require("../models/doctorAppointment.model");
 
 const ipn = async (req, res) => {
   console.log(req.body);
 };
 
 const initPayment = async (req, res) => {
-  const user = await User.findOne({ _id: req.body.user });
-
   const transID =
     "_" +
     Math.random().toString(36).substr(2, 9) +
@@ -65,9 +64,12 @@ const initPayment = async (req, res) => {
     product_profile: "general",
   });
 
-  payment.paymentInit().then((response) => {
-    res.status(200).json(response);
+  const response = await payment.paymentInit();
+  let appointment = await DoctorAppointment.findOne({
+    user: req.user._id,
   });
+  console.log({ appointment });
+  return res.status(200).json(response);
 };
 
 module.exports = {

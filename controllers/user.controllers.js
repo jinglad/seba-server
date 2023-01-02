@@ -1,42 +1,81 @@
-const User = require("../models/user.model");
+const { User, validate } = require("../models/user.model");
 const jwt = require("jsonwebtoken");
+const _ = require("lodash");
+const bcrypt = require("bcrypt");
 
 const createToken = async (req, res) => {
   try {
-    const user = req.body;
-    const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "1d",
+    let user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(400).send({ msg: "User not found." });
+    }
+
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
+    if (!validPassword) {
+      return res.status(400).send({ msg: "Invalid password." });
+    }
+
+    const token = user.geneRateAuthToken();
+    return res.status(200).send({
+      accessToken: token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+      },
     });
-    res.send({accessToken: token})
   } catch (error) {
-    res.status(500).send({msg: "Login failed.", error: error.message});
+    res.status(500).send({ msg: "Login failed.", error: error.message });
   }
-}
+};
 
 const registerUser = async (req, res) => {
-  try {
-    const user = await User.create(req.body);
-    res.status(201).send({msg: "Registration successful."});
-  } catch (error) {
-    res.status(500).send({msg: "Registration failed.", error: error.message});
+  const { error } = validate(req.body);
+  if (error) {
+    return res.status(400).send({ msg: error.details[0].message });
   }
-}
+  let user = {};
+  user = await User.findOne({ email: req.body.email });
+  if (user) {
+    return res.status(400).send({ msg: "User already registered." });
+  }
+
+  user = new User(_.pick(req.body, ["name", "email", "password", "role"]));
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(user.password, salt);
+  const token = user.geneRateAuthToken();
+  try {
+    // const user = await User.create(req.body);
+    const result = await user.save();
+    res.status(201).send({
+      msg: "Registration successful.",
+      user: _.pick(result, ["_id", "name", "email", "role"]),
+      token: token,
+    });
+  } catch (error) {
+    res.status(500).send({ msg: "Registration failed.", error: error.message });
+  }
+};
 
 const getUser = async (req, res) => {
   try {
-    const user = await User.findOne({email:req.query.email});
-    if(user) {
-      res.status(200).send({user});
+    const userEmail = req.user.email;
+    const user = await User.findOne({ email: userEmail });
+    if (user) {
+      res.status(200).send({ user });
     } else {
-      res.status(404).send({msg: "User not found."});
+      res.status(404).send({ msg: "User not found." });
     }
   } catch (error) {
-    res.status(500).send({ error: error.message});
+    res.status(500).send({ error: error.message });
   }
-}
+};
 
 module.exports = {
   createToken,
   registerUser,
-  getUser
-}
+  getUser,
+};
