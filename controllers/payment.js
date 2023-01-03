@@ -42,6 +42,8 @@ const initPayment = async (req, res) => {
     Math.random().toString(36).substr(2, 9) +
     new Date().getTime().toString(36);
 
+  console.log("first trasid ", transID);
+
   const payment = new PaymentSession(
     true,
     process.env.SSLCOMMERZ_STORE_ID,
@@ -95,6 +97,7 @@ const initPayment = async (req, res) => {
 
   const response = await payment.paymentInit();
   if (response.status === "SUCCESS") {
+    console.log("second trasid ", transID);
     await DoctorAppointment.findOneAndUpdate(
       { _id: appointment[0]._id },
       {
