@@ -69,9 +69,11 @@ const initPayment = async (req, res) => {
     user: req.user._id,
   })
     .sort({ createdAt: -1 })
-    .limit(1)[0];
+    .limit(1);
 
   console.log("from payment controller = ", appointment);
+
+  console.log("from payment controller 2 = ", appointment[0]);
   return res.status(200).json(response);
 };
 
