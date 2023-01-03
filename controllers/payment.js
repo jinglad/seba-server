@@ -101,7 +101,7 @@ const initPayment = async (req, res) => {
     await DoctorAppointment.findOneAndUpdate(
       { _id: appointment[0]._id },
       {
-        transactionId: transID,
+        transactionId: response?.tran_id,
         sessionKey: response?.sessionkey,
       },
       {
