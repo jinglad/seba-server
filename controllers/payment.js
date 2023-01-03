@@ -48,7 +48,7 @@ const initPayment = async (req, res) => {
   });
 
   payment.setOrderInfo({
-    total_amount: 700, // Number field
+    total_amount: appointment[0].price, // Number field
     currency: "BDT", // Must be three character string
     tran_id: transID, // Unique Transaction id
     emi_option: 0, // 1 or 0
@@ -87,13 +87,11 @@ const initPayment = async (req, res) => {
 
   const response = await payment.paymentInit();
   if (response.status === "SUCCESS") {
-    await DoctorAppointment.updateOne(
+    await DoctorAppointment.findOneAndUpdate(
       { _id: appointment[0]._id },
       {
-        $set: {
-          transactionId: transID,
-          sessionKey: response["sessionkey"],
-        },
+        transactionId: transID,
+        sessionKey: response?.sessionkey,
       }
     );
   }
