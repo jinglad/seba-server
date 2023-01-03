@@ -65,7 +65,7 @@ const initPayment = async (req, res) => {
   });
 
   const response = await payment.paymentInit();
-  let appointment = await DoctorAppointment.findOne({
+  let appointment = await DoctorAppointment.find({
     user: req.user._id,
   })
     .sort({ createdAt: -1 })
