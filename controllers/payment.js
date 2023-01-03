@@ -11,12 +11,20 @@ const ipn = async (req, res) => {
   if (payment["status"] === "VALID") {
     await DoctorAppointment.findOneAndUpdate(
       { transactionId: tran_id },
-      { status: "approved" }
+      { status: "approved" },
+      {
+        new: true,
+        runValidators: true,
+      }
     );
   } else {
     await DoctorAppointment.findOneAndUpdate(
       { transactionId: tran_id },
-      { status: "rejected" }
+      { status: "rejected" },
+      {
+        new: true,
+        runValidators: true,
+      }
     );
   }
   await payment.save();
@@ -92,6 +100,10 @@ const initPayment = async (req, res) => {
       {
         transactionId: transID,
         sessionKey: response?.sessionkey,
+      },
+      {
+        new: true,
+        runValidators: true,
       }
     );
   }
