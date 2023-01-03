@@ -2,12 +2,33 @@ const SSLCommerz = require("ssl-commerz-node");
 const PaymentSession = SSLCommerz.PaymentSession;
 const User = require("../models/user.model");
 const DoctorAppointment = require("../models/doctorAppointment.model");
+const { Payment } = require("../models/payment.model");
 
 const ipn = async (req, res) => {
   console.log(req.body);
+  const payment = new Payment(req.body);
+  const tran_id = payment["tran_id"];
+  if (payment["status"] === "VALID") {
+    await DoctorAppointment.findOneAndUpdate(
+      { transaction_id: tran_id },
+      { status: "approved" }
+    );
+  } else {
+    await DoctorAppointment.findOneAndUpdate(
+      { transaction: tran_id },
+      { status: "rejected" }
+    );
+  }
+  await payment.save();
 };
 
 const initPayment = async (req, res) => {
+  let appointment = await DoctorAppointment.find({
+    user: req.user._id,
+  })
+    .sort({ createdAt: -1 })
+    .limit(1);
+
   const transID =
     "_" +
     Math.random().toString(36).substr(2, 9) +
@@ -34,22 +55,22 @@ const initPayment = async (req, res) => {
   });
 
   payment.setCusInfo({
-    name: "Jihan",
-    email: "jihanchowdhury70@gmail.com",
+    name: appointment[0]?.fullName,
+    email: appointment[0]?.email,
     add1: "66/A Midtown",
     add2: "Andarkilla",
     city: "Chittagong",
     state: "Optional",
     postcode: 4000,
     country: "Bangladesh",
-    phone: "01700000000",
-    fax: "01700000000",
+    phone: appointment[0]?.phone,
+    fax: appointment[0]?.phone,
   });
 
   payment.setShippingInfo({
     method: "Courier", //Shipping method of the order. Example: YES or NO or Courier
     num_item: 1,
-    name: "Jihan",
+    name: appointment[0]?.fullName,
     add1: "66/A Midtown",
     add2: "Andarkilla",
     city: "Chittagong",
@@ -65,15 +86,17 @@ const initPayment = async (req, res) => {
   });
 
   const response = await payment.paymentInit();
-  let appointment = await DoctorAppointment.find({
-    user: req.user._id,
-  })
-    .sort({ createdAt: -1 })
-    .limit(1);
-
-  console.log("from payment controller = ", appointment);
-
-  console.log("from payment controller 2 = ", appointment[0]);
+  if (response.status === "SUCCESS") {
+    await DoctorAppointment.updateOne(
+      { _id: appointment[0]._id },
+      {
+        $set: {
+          transactionId: transID,
+          sessionKey: response["sessionkey"],
+        },
+      }
+    );
+  }
   return res.status(200).json(response);
 };
 
