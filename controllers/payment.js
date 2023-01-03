@@ -10,12 +10,12 @@ const ipn = async (req, res) => {
   const tran_id = payment["tran_id"];
   if (payment["status"] === "VALID") {
     await DoctorAppointment.findOneAndUpdate(
-      { transaction_id: tran_id },
+      { transactionId: tran_id },
       { status: "approved" }
     );
   } else {
     await DoctorAppointment.findOneAndUpdate(
-      { transaction: tran_id },
+      { transactionId: tran_id },
       { status: "rejected" }
     );
   }
