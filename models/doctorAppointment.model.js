@@ -11,6 +11,10 @@ const DoctorAppointmentSchema = new mongoose.Schema(
       required: [true, "Email address is required"],
       unique: false,
     },
+    phone: {
+      type: String,
+      required: [true, "Phone number is required"],
+    },
     department: {
       type: String,
       required: [true, "Department is required"],
@@ -38,6 +42,10 @@ const DoctorAppointmentSchema = new mongoose.Schema(
     report: {
       type: String,
       // required: [true, "Report is required"],
+    },
+    price: {
+      type: Number,
+      required: [true, "Price is required"],
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
