@@ -98,6 +98,7 @@ const initPayment = async (req, res) => {
   const response = await payment.paymentInit();
   if (response.status === "SUCCESS") {
     console.log("second trasid ", transID);
+    console.log("response ", response);
     await DoctorAppointment.findOneAndUpdate(
       { _id: appointment[0]._id },
       {
