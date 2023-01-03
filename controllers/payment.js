@@ -67,8 +67,11 @@ const initPayment = async (req, res) => {
   const response = await payment.paymentInit();
   let appointment = await DoctorAppointment.findOne({
     user: req.user._id,
-  });
-  console.log({ appointment });
+  })
+    .sort({ createdAt: -1 })
+    .limit(1)[0];
+
+  console.log("from payment controller = ", appointment);
   return res.status(200).json(response);
 };
 
