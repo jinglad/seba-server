@@ -1,5 +1,5 @@
 const DoctorAppointment = require("../models/doctorAppointment.model");
-const { moveFile } = require("../utility");
+const { moveFile, createTransactionId } = require("../utility");
 
 const createDoctorAppointment = async (req, res) => {
   try {
@@ -33,6 +33,7 @@ const createDoctorAppointment = async (req, res) => {
       user: user,
       phone,
       price,
+      transactionId: createTransactionId(),
     });
     res.status(201).json({ doctorAppointment });
   } catch (error) {

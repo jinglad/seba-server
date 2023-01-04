@@ -15,7 +15,16 @@ const moveFile = (file) => {
   });
 };
 
+const createTransactionId = () => {
+  return (
+    "_" +
+    Math.random().toString(36).substr(2, 9) +
+    new Date().getTime().toString(36)
+  );
+};
+
 module.exports = {
   serverError,
   moveFile,
+  createTransactionId,
 };
