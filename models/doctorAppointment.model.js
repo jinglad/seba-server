@@ -58,7 +58,7 @@ const DoctorAppointmentSchema = new mongoose.Schema(
     },
     transactionId: {
       type: String,
-      unique: true,
+      // unique: true,
     },
     sessionKey: String,
   },
