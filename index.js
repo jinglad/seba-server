@@ -10,8 +10,11 @@ const paymentRoute = require("./routers/payment.router");
 
 const app = express();
 
+global.__baseDir = __dirname;
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
 app.use(cors());
 app.use(fileUpload());
 

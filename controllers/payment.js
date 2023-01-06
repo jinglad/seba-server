@@ -3,6 +3,7 @@ const PaymentSession = SSLCommerz.PaymentSession;
 const User = require("../models/user.model");
 const DoctorAppointment = require("../models/doctorAppointment.model");
 const { Payment } = require("../models/payment.model");
+const path = require("path");
 
 const ipn = async (req, res) => {
   console.log(req.body);
@@ -48,7 +49,7 @@ const initPayment = async (req, res) => {
   );
 
   payment.setUrls({
-    success: "yoursite.com/success", // If payment Succeed
+    success: "https://seba-server.onrender.com/api/payment/success", // If payment Succeed
     fail: "yoursite.com/fail", // If payment failed
     cancel: "yoursite.com/cancel", // If user cancel payment
     ipn: "https://seba-server.onrender.com/api/payment/ipn", // SSLCommerz will send http post request in this link
@@ -111,7 +112,12 @@ const initPayment = async (req, res) => {
   return res.status(200).json(response);
 };
 
+const paymentSuccess = async (req, res) => {
+  res.sendFile(path.join(__baseDir + "public/success.html"));
+};
+
 module.exports = {
   initPayment,
   ipn,
+  paymentSuccess,
 };
