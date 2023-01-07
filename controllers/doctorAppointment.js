@@ -52,6 +52,7 @@ const getDoctorAppointment = async (req, res) => {
 
 const getDoctorAppointmentByUserId = async (req, res) => {
   // console.log("from getDoctorAppointmentByUserId = ", req.user._id);
+  console.log("from getDoctorAppointmentByUserId = ", req.user);
   try {
     const doctorAppointment = await DoctorAppointment.find({
       user: req.user._id,
