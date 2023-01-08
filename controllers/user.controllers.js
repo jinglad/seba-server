@@ -74,8 +74,32 @@ const getUser = async (req, res) => {
   }
 };
 
+// function to get all user except password property
+
+const getAllUser = async (req, res) => {
+  try {
+    const user = await User.find();
+    const modifyUser = user.map((item) => {
+      return {
+        _id: item._id,
+        name: item.name,
+        email: item.email,
+        role: item.role,
+      };
+    });
+    if (user) {
+      res.status(200).send({ users: modifyUser });
+    } else {
+      res.status(404).send({ msg: "No user found." });
+    }
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
+
 module.exports = {
   createToken,
   registerUser,
   getUser,
+  getAllUser,
 };
