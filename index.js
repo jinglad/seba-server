@@ -7,6 +7,7 @@ const userRoute = require("./routers/user.routes");
 const connectDB = require("./db/connect");
 const doctorAppointmentRoute = require("./routers/doctorAppointment.route");
 const paymentRoute = require("./routers/payment.router");
+const hospitalAppointmentRoute = require("./routers/hospitalAppointment.route");
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.get("/", (req, res) => {
 app.use("/", userRoute);
 app.use("/api/doctor-appointment", doctorAppointmentRoute);
 app.use("/api/payment", paymentRoute);
+app.use("/api/hospital-appointment", hospitalAppointmentRoute);
 
 app.use((err, req, res, next) => {
   return res.status(500).send({ msg: err.message });
