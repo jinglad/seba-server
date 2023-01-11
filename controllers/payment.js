@@ -33,7 +33,7 @@ const ipn = async (req, res) => {
 };
 
 const hospitalIpn = async (req, res) => {
-  console.log(req.body);
+  console.log("hospital ipn", req.body);
   const payment = new Payment(req.body);
   const tran_id = payment["tran_id"];
   if (payment["status"] === "VALID") {

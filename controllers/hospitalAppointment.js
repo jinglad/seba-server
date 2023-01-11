@@ -3,7 +3,7 @@ const HospitalAppointment = require("../models/hospitalAppointment.model");
 const { moveFile, createTransactionId } = require("../utility");
 
 const createHospitalAppointment = async (req, res) => {
-  console.log("from createHospitalAppointment = ", req.body);
+  // console.log("from createHospitalAppointment = ", req.body);
 
   try {
     const {
