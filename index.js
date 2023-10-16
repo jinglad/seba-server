@@ -19,7 +19,7 @@ app.use(express.static("public"));
 app.use(cors());
 app.use(fileUpload());
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5006;
 
 app.get("/", (req, res) => {
   res.send("Seba Server");
