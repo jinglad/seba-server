@@ -4,12 +4,14 @@ const {
   getHospitalAppointmentByUserId,
   getRecentHospitalAppointment,
   getHospitalAppointmentById,
+  getHospitalAppointment,
 } = require("../controllers/hospitalAppointment");
 const { verifyToken } = require("../middlewares/verifyToken");
 
 const router = express.Router();
 
 router.route("/").post(verifyToken, createHospitalAppointment);
+router.route("/").get(verifyToken, getHospitalAppointment);
 router
   .route("/hospital-appointment-by-user-id")
   .get(verifyToken, getHospitalAppointmentByUserId);

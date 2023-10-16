@@ -43,8 +43,15 @@ const createDoctorAppointment = async (req, res) => {
 
 const getDoctorAppointment = async (req, res) => {
   try {
-    const doctorAppointment = await DoctorAppointment.find();
-    res.status(200).json({ doctorAppointment });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.pageSize) || 10;
+    const skip = (page - 1) * limit;
+    const doctorAppointment = await DoctorAppointment.find()
+      .skip(skip)
+      .limit(limit);
+    const total = await DoctorAppointment.countDocuments();
+    const totalPages = Math.ceil(total / limit);
+    res.status(200).json({ doctorAppointment, totalPages, total });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

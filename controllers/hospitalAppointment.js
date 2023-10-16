@@ -41,8 +41,15 @@ const createHospitalAppointment = async (req, res) => {
 
 const getHospitalAppointment = async (req, res) => {
   try {
-    const hospitalAppointment = await HospitalAppointment.find();
-    res.status(200).json({ hospitalAppointment });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.pageSize) || 10;
+    const skip = (page - 1) * limit;
+    const hospitalAppointment = await HospitalAppointment.find()
+      .skip(skip)
+      .limit(limit);
+    const total = await HospitalAppointment.countDocuments();
+    const totalPages = Math.ceil(total / limit);
+    res.status(200).json({ hospitalAppointment, totalPages, total });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
